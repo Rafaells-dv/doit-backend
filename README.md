@@ -27,7 +27,7 @@ The project contains the following plugins/dependencies:
   * MySQL
   * ** If you use Eclipse or other IDE you may have to install the lombok plugin in you IDE
     
-## Setup adn Run
+## Setup and Run
 
   * Create schema on the data base with the sql script in the root folder of the github project
     
