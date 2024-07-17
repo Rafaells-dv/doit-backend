@@ -1,19 +1,10 @@
 package com.project.doit.dto;
 
 import com.project.doit.entity.TaskEntity;
-import lombok.Data;
-import org.springframework.beans.BeanUtils;
 
-@Data
-public class TaskDto {
+public record TaskDto(Long id, String title) {
 
-    private Long id;
-
-    private String title;
-
-    public TaskDto() {super(); }
-
-    public TaskDto(TaskEntity task) {
-        BeanUtils.copyProperties(task, this);
+    public TaskDto(TaskEntity task){
+        this(task.getId(), task.getTitle());
     }
 }

@@ -22,7 +22,7 @@ public class TaskService {
     private TaskMapper taskMapper;
 
     public TaskDto create(TaskDto taskDto) {
-        if (taskDto.getTitle() == null || taskDto.getTitle().isEmpty()) {
+        if (taskDto.title() == null || taskDto.title().isEmpty()) {
             throw new EmptyFieldException("Título deve ser preenchido.");
         }
 
@@ -33,7 +33,7 @@ public class TaskService {
     }
 
     public TaskDto update(TaskDto taskDto, Long id) {
-        if (taskDto.getTitle() == null || taskDto.getTitle().isEmpty()) {
+        if (taskDto.title() == null || taskDto.title().isEmpty()) {
             throw new EmptyFieldException();
         }
 
@@ -41,12 +41,12 @@ public class TaskService {
         if (optionalTask.isPresent()) {
             TaskEntity taskSelected = optionalTask.get();
 
-            taskSelected.setTitle(taskDto.getTitle());
+            taskSelected.setTitle(taskDto.title());
 
             taskRepository.save(taskSelected);
             return taskMapper.converterParaDto(taskSelected);
         } else {
-            return new TaskDto();
+            return null;
         }
     }
 

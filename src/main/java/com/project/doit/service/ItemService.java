@@ -26,7 +26,7 @@ public class ItemService {
     private ItemMapper itemMapper;
 
     public ItemDto create(ItemDto itemDto, Long taskId) {
-        if (itemDto.getDescription() == null || itemDto.getDescription().isEmpty()) {
+        if (itemDto.description() == null || itemDto.description().isEmpty()) {
             throw new EmptyFieldException("Item deve ser preenchido.");
         }
 
@@ -41,12 +41,12 @@ public class ItemService {
     }
 
     public ItemDto update(ItemDto itemDto, Long itemId) {
-        if (itemDto.getDescription() == null || itemDto.getDescription().isEmpty()) {
+        if (itemDto.description() == null || itemDto.description().isEmpty()) {
             throw new EmptyFieldException();
         }
         ItemEntity updateItem = itemRepository.findById(itemId).get();
 
-        updateItem.setDescription(itemDto.getDescription());
+        updateItem.setDescription(itemDto.description());
 
         itemRepository.save(updateItem);
         return itemMapper.converterParaDto(updateItem);
