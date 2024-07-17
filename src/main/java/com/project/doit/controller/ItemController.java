@@ -17,23 +17,23 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    @PostMapping("/additem")
+    @PostMapping()
     public ResponseEntity<ItemDto> addItem(@RequestBody ItemDto itemDto, @RequestParam Long taskId) {
         return new ResponseEntity<>(itemService.create(itemDto, taskId), HttpStatus.CREATED);
     }
 
-    @PutMapping("/att")
+    @PutMapping()
     public ResponseEntity<ItemDto> updateItem(@RequestParam Long itemId, @RequestBody ItemDto itemDto) {
         return ResponseEntity.ok(itemService.update(itemDto, itemId));
     }
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<List<ItemDto>> getAllItems(@RequestParam Long taskId) {
         return ResponseEntity.ok(itemService.getTaskItems(taskId));
     }
 
-    @DeleteMapping("/delete/{itemId}")
-    public ResponseEntity<?> deleteItem(@PathVariable Long itemId) {
+    @DeleteMapping()
+    public ResponseEntity<?> deleteItem(@RequestParam Long itemId) {
         itemService.delete(itemId);
         return ResponseEntity.noContent().build();
     }

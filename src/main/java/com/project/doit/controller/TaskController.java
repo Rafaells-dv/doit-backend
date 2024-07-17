@@ -17,23 +17,24 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @PostMapping("/newtask")
+    @PostMapping()
     public ResponseEntity<?> addTask(@RequestBody TaskDto taskDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(taskService.create(taskDto));
+        TaskDto newTask = taskService.create(taskDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTask);
     }
 
-    @PutMapping("/att/{taskId}")
-    public ResponseEntity<?> updateTask(@RequestBody TaskDto taskDto, @PathVariable Long taskId) {
+    @PutMapping()
+    public ResponseEntity<?> updateTask(@RequestBody TaskDto taskDto, @RequestParam Long taskId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.update(taskDto, taskId));
     }
 
-    @GetMapping("/all")
+    @GetMapping()
     public ResponseEntity<?> getAllTasks() {
         return ResponseEntity.ok().body(taskService.findAllTasks());
     }
 
-    @DeleteMapping("/delete/{taskId}")
-    public ResponseEntity<?> deleteTask(@PathVariable Long taskId) {
+    @DeleteMapping()
+    public ResponseEntity<?> deleteTask(@RequestParam Long taskId) {
         taskService.delete(taskId);
         return ResponseEntity.ok().body("Tarefa excluída com sucesso");
     }
