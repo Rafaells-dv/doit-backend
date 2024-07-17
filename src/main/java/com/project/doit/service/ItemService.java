@@ -4,6 +4,7 @@ import com.project.doit.dto.ItemDto;
 import com.project.doit.entity.ItemEntity;
 import com.project.doit.entity.TaskEntity;
 import com.project.doit.exception.EmptyFieldException;
+import com.project.doit.exception.NotFoundException;
 import com.project.doit.mapper.ItemMapper;
 import com.project.doit.repository.ItemRepository;
 import com.project.doit.repository.TaskRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,29 +29,43 @@ public class ItemService {
 
     public ItemDto create(ItemDto itemDto, Long taskId) {
         if (itemDto.description() == null || itemDto.description().isEmpty()) {
-            throw new EmptyFieldException("Item deve ser preenchido.");
+            throw new EmptyFieldException("description");
         }
 
-        TaskEntity taskEntity =  taskRepository.findById(taskId).get();
+        Optional<TaskEntity> taskEntity =  taskRepository.findById(taskId);
 
-        ItemEntity itemEntity = itemMapper.converterParaEntity(itemDto);
-        itemEntity.setTask(taskEntity);
+        if (taskEntity.isPresent()) {
 
-        itemRepository.save(itemEntity);
+            ItemEntity itemEntity = itemMapper.converterParaEntity(itemDto);
+            itemEntity.setTask(taskEntity.get());
+            itemRepository.save(itemEntity);
 
-        return itemMapper.converterParaDto(itemEntity);
+            return itemMapper.converterParaDto(itemEntity);
+        } else {
+            throw new NotFoundException("task");
+        }
+
+
+
     }
 
     public ItemDto update(ItemDto itemDto, Long itemId) {
         if (itemDto.description() == null || itemDto.description().isEmpty()) {
-            throw new EmptyFieldException();
+            throw new EmptyFieldException("description");
         }
-        ItemEntity updateItem = itemRepository.findById(itemId).get();
 
-        updateItem.setDescription(itemDto.description());
+        Optional<ItemEntity> updateItem = itemRepository.findById(itemId);
 
-        itemRepository.save(updateItem);
-        return itemMapper.converterParaDto(updateItem);
+        if (updateItem.isPresent()) {
+
+            updateItem.get().setDescription(itemDto.description());
+            itemRepository.save(updateItem.get());
+
+            return itemMapper.converterParaDto(updateItem.get());
+
+        } else {
+            throw new NotFoundException("item");
+        }
     }
 
     public List<ItemDto> getTaskItems(Long taskId) {
@@ -58,7 +74,14 @@ public class ItemService {
     }
 
     public void delete(Long itemId) {
-        ItemEntity itemEntity = itemRepository.findById(itemId).get();
-        itemRepository.delete(itemEntity);
+        Optional<ItemEntity> itemEntity = itemRepository.findById(itemId);
+
+        if (itemEntity.isPresent()) {
+            itemRepository.delete(itemEntity.get());
+        } else {
+            throw new NotFoundException("item");
+        }
+
+
     }
 }

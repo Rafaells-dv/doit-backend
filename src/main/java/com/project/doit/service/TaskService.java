@@ -3,6 +3,7 @@ package com.project.doit.service;
 import com.project.doit.dto.TaskDto;
 import com.project.doit.entity.TaskEntity;
 import com.project.doit.exception.EmptyFieldException;
+import com.project.doit.exception.NotFoundException;
 import com.project.doit.mapper.TaskMapper;
 import com.project.doit.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class TaskService {
 
     public TaskDto create(TaskDto taskDto) {
         if (taskDto.title() == null || taskDto.title().isEmpty()) {
-            throw new EmptyFieldException("Título deve ser preenchido.");
+            throw new EmptyFieldException("title");
         }
 
         TaskEntity taskEntity = taskMapper.converterParaEntity(taskDto);
@@ -34,19 +35,18 @@ public class TaskService {
 
     public TaskDto update(TaskDto taskDto, Long id) {
         if (taskDto.title() == null || taskDto.title().isEmpty()) {
-            throw new EmptyFieldException();
+            throw new EmptyFieldException("title");
         }
 
-        Optional<TaskEntity> optionalTask = taskRepository.findById(id);
-        if (optionalTask.isPresent()) {
-            TaskEntity taskSelected = optionalTask.get();
+        Optional<TaskEntity> taskSelected = taskRepository.findById(id);
+        if (taskSelected.isPresent()) {
 
-            taskSelected.setTitle(taskDto.title());
+            taskSelected.get().setTitle(taskDto.title());
 
-            taskRepository.save(taskSelected);
-            return taskMapper.converterParaDto(taskSelected);
+            taskRepository.save(taskSelected.get());
+            return taskMapper.converterParaDto(taskSelected.get());
         } else {
-            return null;
+            throw new NotFoundException("task");
         }
     }
 
@@ -56,6 +56,12 @@ public class TaskService {
     }
 
     public void delete(Long id) {
-        taskRepository.deleteById(id);
+        Optional<TaskEntity> optionalTask = taskRepository.findById(id);
+        if (optionalTask.isPresent()) {
+            taskRepository.deleteById(id);
+        } else {
+            throw new NotFoundException("task");
+        }
+
     }
 }
