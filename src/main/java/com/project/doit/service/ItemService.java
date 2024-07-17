@@ -3,6 +3,7 @@ package com.project.doit.service;
 import com.project.doit.dto.ItemDto;
 import com.project.doit.entity.ItemEntity;
 import com.project.doit.entity.TaskEntity;
+import com.project.doit.exception.EmptyFieldException;
 import com.project.doit.mapper.ItemMapper;
 import com.project.doit.repository.ItemRepository;
 import com.project.doit.repository.TaskRepository;
@@ -25,6 +26,10 @@ public class ItemService {
     private ItemMapper itemMapper;
 
     public ItemDto create(ItemDto itemDto, Long taskId) {
+        if (itemDto.getDescription() == null || itemDto.getDescription().isEmpty()) {
+            throw new EmptyFieldException("Item deve ser preenchido.");
+        }
+
         TaskEntity taskEntity =  taskRepository.findById(taskId).get();
 
         ItemEntity itemEntity = itemMapper.converterParaEntity(itemDto);
@@ -36,6 +41,9 @@ public class ItemService {
     }
 
     public ItemDto update(ItemDto itemDto, Long itemId) {
+        if (itemDto.getDescription() == null || itemDto.getDescription().isEmpty()) {
+            throw new EmptyFieldException();
+        }
         ItemEntity updateItem = itemRepository.findById(itemId).get();
 
         updateItem.setDescription(itemDto.getDescription());
