@@ -14,13 +14,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EmptyFieldException.class)
     private ResponseEntity<RestErrorMessage> emptyFieldHandler(EmptyFieldException ex) {
-        RestErrorMessage threatResponse = new RestErrorMessage(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        RestErrorMessage threatResponse = new RestErrorMessage(ex.getMessage(), HttpStatus.BAD_REQUEST, "Preencha todos os campos!");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(threatResponse);
     }
 
     @ExceptionHandler(NotFoundException.class)
     private ResponseEntity<RestErrorMessage> notFoundHandler(NotFoundException ex) {
-        RestErrorMessage threatResponse = new RestErrorMessage(ex.getMessage(), HttpStatus.NOT_FOUND);
+        RestErrorMessage threatResponse = new RestErrorMessage(ex.getMessage(), HttpStatus.NOT_FOUND, "");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(threatResponse);
     }
 }
