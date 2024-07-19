@@ -8,9 +8,11 @@ import com.project.doit.exception.NotFoundException;
 import com.project.doit.mapper.ItemMapper;
 import com.project.doit.repository.ItemRepository;
 import com.project.doit.repository.TaskRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,8 +29,8 @@ public class ItemService {
     @Autowired
     private ItemMapper itemMapper;
 
-    public ItemDto create(ItemDto itemDto, Long taskId) {
-        if (itemDto.description() == null || itemDto.description().isEmpty()) {
+    public ItemDto create(ItemDto itemDto, Long taskId){
+        if (isEmptyField(itemDto)) {
             throw new EmptyFieldException("description");
         }
 
@@ -44,9 +46,6 @@ public class ItemService {
         } else {
             throw new NotFoundException("task");
         }
-
-
-
     }
 
     public ItemDto update(ItemDto itemDto, Long itemId) {
@@ -81,7 +80,9 @@ public class ItemService {
         } else {
             throw new NotFoundException("item");
         }
+    }
 
-
+    public boolean isEmptyField(ItemDto itemDto){
+        return itemDto.description() == null || itemDto.description().isEmpty();
     }
 }
