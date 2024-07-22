@@ -8,11 +8,8 @@ import com.project.doit.exception.NotFoundException;
 import com.project.doit.mapper.ItemMapper;
 import com.project.doit.repository.ItemRepository;
 import com.project.doit.repository.TaskRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,7 +46,7 @@ public class ItemService {
     }
 
     public ItemDto update(ItemDto itemDto, Long itemId) {
-        if (itemDto.description() == null || itemDto.description().isEmpty()) {
+        if (isEmptyField(itemDto)) {
             throw new EmptyFieldException("description");
         }
 
@@ -68,6 +65,12 @@ public class ItemService {
     }
 
     public List<ItemDto> getTaskItems(Long taskId) {
+        Optional<TaskEntity> taskEntity =  taskRepository.findById(taskId);
+
+        if (taskEntity.isEmpty()) {
+            throw new NotFoundException("task");
+        }
+
         List<ItemEntity> items = itemRepository.findAllBytaskId(taskId);
         return items.stream().map(itemMapper::converterParaDto).collect(Collectors.toList());
     }
