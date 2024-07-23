@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -249,4 +249,21 @@ class ItemServiceTest {
         }
     }
 
+    @Test
+    void emptyFieldTrue() {
+        ItemDto itemDto = ItemFactory.emptyDto();
+
+        boolean response = itemService.isEmptyField(itemDto);
+
+        assertTrue(response);
+    }
+
+    @Test
+    void emptyFieldFalse() {
+        ItemDto itemDto = ItemFactory.sentDto();
+
+        boolean response = itemService.isEmptyField(itemDto);
+
+        assertFalse(response);
+    }
 }
